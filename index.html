@@ -1,14 +1,658 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
-		<meta name="generator" content="Hostinger Horizons" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Hostinger Horizons</title>
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="module" src="/src/main.jsx"></script>
-	</body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDA CONTÁBIL - Extensão WhatsApp Web para Contabilidade & RH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#128C7E',
+                        secondary: '#25D366',
+                        accent: '#34B7F1',
+                        dark: '#075E54',
+                        light: '#DCF8C6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+        }
+        
+        .agent-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .incoming {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            align-self: flex-start;
+        }
+        
+        .outgoing {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+        }
+        
+        .agent-response {
+            background-color: #e0f7fa;
+            border-left: 3px solid #00bcd4;
+        }
+        
+        .sidebar-item:hover {
+            background-color: #e0f7fa;
+        }
+        
+        .active-item {
+            background-color: #d1ecf1;
+            border-right: 3px solid #00bcd4;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+        
+        .agent-badge {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .agent-badge::after {
+            content: "AI";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff9800;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .message-input {
+            resize: none;
+            height: 40px;
+            max-height: 150px;
+        }
+        
+        .company-info-box {
+            background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pricing-card {
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .chat-container {
+            background: url('https://www.transparenttextures.com/patterns/cubes.png'), #e5ddd5;
+            background-color: #e5ddd5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-80 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Header -->
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-xl font-bold text-primary">RDA CONTÁBIL</h1>
+                    <div class="flex space-x-2">
+                        <button class="p-2 rounded-full hover:bg-gray-100">
+                            <i class="fas fa-cog text-gray-600"></i>
+                        </button>
+                        <button class="p-2 rounded-full hover:bg-gray-100">
+                            <i class="fas fa-ellipsis-v text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4 flex bg-gray-100 rounded-lg p-1">
+                    <button class="flex-1 py-2 text-center text-sm font-medium rounded-md bg-white shadow">Atendimentos</button>
+                    <button class="flex-1 py-2 text-center text-sm font-medium rounded-md text-gray-500">Status</button>
+                    <button class="flex-1 py-2 text-center text-sm font-medium rounded-md text-gray-500">Chamadas</button>
+                </div>
+            </div>
+            
+            <!-- Search -->
+            <div class="p-3 border-b border-gray-200">
+                <div class="relative">
+                    <input type="text" placeholder="Buscar ou iniciar novo atendimento" class="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+            
+            <!-- Agent Tabs -->
+            <div class="flex border-b border-gray-200">
+                <button class="flex-1 py-3 text-center text-sm font-medium text-primary border-b-2 border-primary">Agents</button>
+                <button class="flex-1 py-3 text-center text-sm font-medium text-gray-500">Quick Replies</button>
+                <button class="flex-1 py-3 text-center text-sm font-medium text-gray-500">Logs</button>
+            </div>
+            
+            <!-- Agent List -->
+            <div class="flex-1 overflow-y-auto">
+                <!-- Agent Item -->
+                <div class="sidebar-item p-3 flex items-center border-b border-gray-100 cursor-pointer active-item">
+                    <div class="mr-3 relative">
+                        <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-medium">Financeiro</h3>
+                            <span class="text-xs text-gray-500">12:45</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-600 truncate">Cliente: Enviei o comprovante de pagamento</span>
+                            <span class="ml-2 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Agent Item -->
+                <div class="sidebar-item p-3 flex items-center border-b border-gray-100 cursor-pointer">
+                    <div class="mr-3 relative">
+                        <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-medium">Recursos Humanos</h3>
+                            <span class="text-xs text-gray-500">11:30</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-600 truncate">Férias do funcionário aprovadas</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Agent Item -->
+                <div class="sidebar-item p-3 flex items-center border-b border-gray-100 cursor-pointer">
+                    <div class="mr-3 relative">
+                        <div class="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white font-bold">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-medium">Fiscal</h3>
+                            <span class="text-xs text-gray-500">10:15</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-600 truncate">Novo documento fiscal recebido</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Agent Item -->
+                <div class="sidebar-item p-3 flex items-center border-b border-gray-100 cursor-pointer">
+                    <div class="mr-3 relative">
+                        <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-medium">Feriados</h3>
+                            <span class="text-xs text-gray-500">Ontem</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-600 truncate">Mensagem automática programada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Replies Section -->
+            <div class="p-3 border-t border-gray-200">
+                <h3 class="text-sm font-semibold text-gray-500 mb-2">Respostas Rápidas</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="text-xs bg-blue-100 text-blue-800 py-1 px-2 rounded hover:bg-blue-200">Olá, como posso ajudar?</button>
+                    <button class="text-xs bg-green-100 text-green-800 py-1 px-2 rounded hover:bg-green-200">Obrigado pelo contato</button>
+                    <button class="text-xs bg-yellow-100 text-yellow-800 py-1 px-2 rounded hover:bg-yellow-200">Por favor, envie os documentos</button>
+                    <button class="text-xs bg-purple-100 text-purple-800 py-1 px-2 rounded hover:bg-purple-200">Em breve retorno</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="flex-1 flex flex-col">
+            <!-- Chat Header -->
+            <div class="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold mr-3">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold">Financeiro</h2>
+                        <div class="flex items-center">
+                            <span class="text-green-500 text-xs mr-1"><i class="fas fa-circle"></i></span>
+                            <span class="text-xs text-gray-500">Atendente: Carlos Silva</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div class="flex-1 overflow-y-auto chat-container p-4">
+                <!-- Incoming Message -->
+                <div class="flex mb-4">
+                    <div class="message-bubble incoming">
+                        <div class="text-xs text-gray-500 mb-1">Cliente</div>
+                        <div class="text-sm">Boa tarde! Gostaria de confirmar o pagamento que fiz ontem à tarde. Pode verificar?</div>
+                        <div class="text-xs text-gray-400 mt-1">12:42</div>
+                    </div>
+                </div>
+                
+                <!-- Outgoing Message -->
+                <div class="flex justify-end mb-4">
+                    <div class="message-bubble outgoing">
+                        <div class="text-xs text-gray-500 mb-1">Carlos Silva</div>
+                        <div class="text-sm">Claro! Estou verificando o pagamento do CPF 123.456.789-00. Aguarde alguns minutos.</div>
+                        <div class="text-xs text-gray-400 mt-1 text-right">12:43</div>
+                    </div>
+                </div>
+                
+                <!-- Agent Response -->
+                <div class="flex mb-4">
+                    <div class="message-bubble agent-response">
+                        <div class="flex items-center mb-1">
+                            <div class="agent-icon bg-blue-500 mr-2">AI</div>
+                            <div class="text-xs font-semibold">Assistente Financeiro</div>
+                        </div>
+                        <div class="text-sm">
+                            Olá! Verifiquei o pagamento de R$ 1.500,00 com data de 12/06/2023. O comprovante foi processado com sucesso. 
+                            Você pode acessar os detalhes no portal do cliente.
+                        </div>
+                        <div class="mt-2 text-xs text-gray-500">12:45</div>
+                    </div>
+                </div>
+                
+                <!-- Client Attachment -->
+                <div class="flex mb-4">
+                    <div class="message-bubble incoming">
+                        <div class="text-xs text-gray-500 mb-1">Cliente</div>
+                        <div class="flex items-center bg-gray-100 p-2 rounded">
+                            <i class="fas fa-file-pdf text-red-500 text-2xl mr-2"></i>
+                            <div>
+                                <div class="text-sm font-medium">comprovante-pagamento.pdf</div>
+                                <div class="text-xs text-gray-500">345 KB</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">12:46</div>
+                    </div>
+                </div>
+                
+                <!-- Audio Message -->
+                <div class="flex mb-4">
+                    <div class="message-bubble incoming">
+                        <div class="text-xs text-gray-500 mb-1">Cliente</div>
+                        <div class="flex items-center bg-gray-100 p-2 rounded">
+                            <button class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white mr-2">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <div>
+                                <div class="text-sm">Mensagem de voz</div>
+                                <div class="text-xs text-gray-500">0:32</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">12:47</div>
+                    </div>
+                </div>
+                
+                <!-- Image Message -->
+                <div class="flex mb-4">
+                    <div class="message-bubble incoming">
+                        <div class="text-xs text-gray-500 mb-1">Cliente</div>
+                        <div class="relative">
+                            <img src="https://placehold.co/300x200/128C7E/FFFFFF?text=Receipt+Image" alt="Receipt" class="rounded-lg">
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">12:48</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Message Input -->
+            <div class="p-4 bg-white border-t border-gray-200">
+                <div class="flex items-center mb-2">
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-plus-circle"></i>
+                        </button>
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-smile"></i>
+                        </button>
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex">
+                    <textarea 
+                        class="message-input flex-1 border border-gray-300 rounded-l-lg p-2 focus:outline-none focus:ring-1 focus:ring-primary" 
+                        placeholder="Digite uma mensagem"
+                    ></textarea>
+                    <button class="bg-primary text-white px-4 rounded-r-lg hover:bg-dark">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-xs text-gray-500 text-right">
+                    Limite de caracteres: <span id="charCount">0</span>/5000
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Panel -->
+        <div class="w-96 bg-white border-l border-gray-200 p-4 overflow-y-auto">
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 mb-4">
+                <button class="flex-1 py-2 text-center font-medium text-primary border-b-2 border-primary">Configurações</button>
+                <button class="flex-1 py-2 text-center font-medium text-gray-500">Notas</button>
+            </div>
+            
+            <!-- Configurations -->
+            <div class="tab-content active">
+                <h3 class="font-semibold text-lg mb-4">Configurações do Departamento</h3>
+                
+                <!-- Department Info -->
+                <div class="mb-6">
+                    <h4 class="font-medium mb-2">Informações do Departamento</h4>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold mr-3">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Departamento Financeiro</div>
+                                <div class="text-sm text-gray-500">Responsável: Carlos Silva</div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-700 mt-2">
+                            Este departamento é responsável por todos os processos financeiros da empresa, 
+                            incluindo contas a pagar, contas a receber, conciliação bancária e relatórios financeiros.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- AI Agents -->
+                <div class="mb-6">
+                    <h4 class="font-medium mb-2">Agentes de IA</h4>
+                    <div class="space-y-3">
+                        <!-- Agent Card -->
+                        <div class="border border-gray-200 rounded-lg p-3 flex items-center">
+                            <div class="agent-icon bg-blue-500 mr-3">AI</div>
+                            <div class="flex-1">
+                                <div class="font-medium">ChatGPT Financeiro</div>
+                                <div class="text-xs text-gray-500">Processa pagamentos e relatórios</div>
+                            </div>
+                            <button class="text-primary">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Agent Card -->
+                        <div class="border border-gray-200 rounded-lg p-3 flex items-center">
+                            <div class="agent-icon bg-green-500 mr-3">AI</div>
+                            <div class="flex-1">
+                                <div class="font-medium">Gemini Fiscal</div>
+                                <div class="text-xs text-gray-500">Processa documentos fiscais</div>
+                            </div>
+                            <button class="text-primary">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Agent Card -->
+                        <div class="border border-gray-200 rounded-lg p-3 flex items-center">
+                            <div class="agent-icon bg-purple-500 mr-3">AI</div>
+                            <div class="flex-1">
+                                <div class="font-medium">Bot Personalizado</div>
+                                <div class="text-xs text-gray-500">Assistente de RH</div>
+                            </div>
+                            <button class="text-primary">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Business Hours -->
+                <div class="mb-6">
+                    <h4 class="font-medium mb-2">Horário de Funcionamento</h4>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                            <span>Horário comercial:</span>
+                            <span class="font-medium">08:00 - 18:00</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span>Feriados:</span>
+                            <span class="font-medium">Automático</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Mensagem fora de horário:</span>
+                            <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Ativo</span>
+                        </div>
+                        <div class="mt-3 text-sm text-gray-600">
+                            "A equipe de atendimento está fora de horário. Retornaremos a partir das 08:00 de amanhã."
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Replies -->
+                <div>
+                    <h4 class="font-medium mb-2">Respostas Rápidas</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                            <span class="text-sm">Pagamento confirmado</span>
+                            <button class="text-primary text-sm">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                            <span class="text-sm">Documentos necessários</span>
+                            <button class="text-primary text-sm">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                            <span class="text-sm">Aguardando retorno</span>
+                            <button class="text-primary text-sm">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <button class="w-full py-2 bg-primary text-white rounded-lg mt-2">
+                            <i class="fas fa-plus mr-2"></i>Adicionar Nova Resposta
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notes Tab -->
+            <div class="tab-content">
+                <h3 class="font-semibold text-lg mb-4">Anotações do Cliente</h3>
+                <div class="mb-4">
+                    <textarea 
+                        class="w-full border border-gray-300 rounded-lg p-3 h-40 focus:outline-none focus:ring-1 focus:ring-primary" 
+                        placeholder="Adicione anotações sobre este cliente..."></textarea>
+                </div>
+                <button class="w-full py-2 bg-primary text-white rounded-lg">
+                    Salvar Anotações
+                </button>
+                
+                <div class="mt-6">
+                    <h4 class="font-medium mb-2">Histórico de Anotações</h4>
+                    <div class="space-y-3">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="font-medium">Carlos Silva</span>
+                                <span class="text-gray-500">12/06/2023</span>
+                            </div>
+                            <p class="text-sm text-gray-700">Cliente solicitou segunda via do boleto de junho. Enviado por e-mail.</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="font-medium">Maria Oliveira</span>
+                                <span class="text-gray-500">08/06/2023</span>
+                            </div>
+                            <p class="text-sm text-gray-700">Cliente com restrição de pagamento. Aguardando confirmação judicial.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6">
+        <button class="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center pulse">
+            <i class="fas fa-plus text-xl"></i>
+        </button>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('[data-tab]').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('[data-tab]').forEach(btn => {
+                    btn.classList.remove('border-primary', 'text-primary');
+                    btn.classList.add('text-gray-500');
+                });
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab
+                button.classList.remove('text-gray-500');
+                button.classList.add('border-primary', 'text-primary');
+                
+                // Show corresponding content
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Character count for message input
+        const messageInput = document.querySelector('.message-input');
+        const charCount = document.getElementById('charCount');
+        
+        messageInput.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            // Change color if approaching limit
+            if (length > 4500) {
+                charCount.classList.add('text-red-500');
+                charCount.classList.remove('text-gray-500');
+            } else {
+                charCount.classList.remove('text-red-500');
+                charCount.classList.add('text-gray-500');
+            }
+        });
+        
+        // Simulate AI response after a delay
+        setTimeout(() => {
+            const aiResponse = document.createElement('div');
+            aiResponse.className = 'flex mb-4';
+            aiResponse.innerHTML = `
+                <div class="message-bubble agent-response">
+                    <div class="flex items-center mb-1">
+                        <div class="agent-icon bg-blue-500 mr-2">AI</div>
+                        <div class="text-xs font-semibold">Assistente Financeiro</div>
+                    </div>
+                    <div class="text-sm">
+                        Processo de pagamento confirmado para o cliente João Silva (CPF: 123.456.789-00). 
+                        Comprovante anexado à plataforma. Mensagem automática de confirmação enviada.
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">Agora mesmo</div>
+                </div>
+            `;
+            
+            document.querySelector('.chat-container').appendChild(aiResponse);
+            document.querySelector('.chat-container').scrollTop = document.querySelector('.chat-container').scrollHeight;
+        }, 5000);
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=RDACONSULTORIA/whatsapp-rda-cont-bil" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
 </html>
